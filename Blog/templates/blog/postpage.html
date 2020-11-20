@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+	
+</head>
+<body>
+{% extends "blog/base.html" %}
+{% block main_block %}
+
+
+
+
+     <div class="container">
+
+      <div class="row">
+
+        <!-- Blog Entries Column -->
+        <div class="col-md-8">
+
+          <h1 class="my-4">Welcome
+            <small>{{ user.username }}</small>
+          </h1>
+
+
+
+				 <div class="card mb-4">
+
+					<img class="card-img-top" src="{{ post_list.image.url }}" alt="Card image cap" width="200" height="270">
+
+					  <div class="card-body">
+						  <h2 class="card-title">{{post_list.title}}</h2>
+					  <p class="card-text">Category: {{post_list.cat}}</p>
+					  <p class="card-text">{{post_list.body}}</p>
+
+						 <div> Related tags:
+							{% for t in tag_list %}
+							<a href="/Tag/{{t.id}}">#{{t.name}}</a>
+						{% endfor %}
+						 <div id="likecount">Likes: {{postlike}}</div> <div id="discount">Dislikes: {{postdislike}}</div>
+
+                         </div>
+
+
+					  </div>	  <!-- card card body-->
+
+					  <div class="card-footer text-muted">
+						  Posted on {{post_list.created_at}} by {{post_list.author}}
+						</div>
+
+
+
+
+
+
+
+              </div> <!-- card mb4-->
+
+			         <!-- Pagination -->
+
+        </div> <!-- column -->
+
+        <!-- Sidebar Widgets Column -->
+{% include "blog/sidebar.html" %}
+      </div><!-- /.row -->
+
+
+    </div> <!--container-->
+
+
+	<div class="container">
+
+	{% if user.is_authenticated %}
+	<p>
+
+
+				 <button type="button" class=" likebutton btn btn-default btn-sm" value='Blog_like{{post_list.id}}' data-catid='{{post_list.id}}'>
+				<i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Like
+				 </button>
+
+				 <button type="button" class=" dislikebutton btn btn-default btn-sm" value='Blog_like{{post_list.id}}' data-catid='{{post_list.id}}'>
+				<i class="fa fa-thumbs-o-down" aria-hidden="true"></i> dislike
+				 </button>
+	<br/>
+
+
+
+
+		<div class="container">
+  	<div class="row">
+    <div class="col-sm-10 col-sm-offset-1" id="logout">
+        <div class="page-header">
+            <h3 class="reviews">Leave your comment</h3>
+			<h2 class="lead">Comments</h2>
+
+			<div class="form-group row">
+		<textarea id="comment" class="form-control col-md-6" rows="2"  placeholder="input comment!" ></textarea>
+    	</div>
+		    	<button class="btn btn-primary btn-circle text-uppercase mr-3 " value="{{post_list.id}}" id="comment-formbutton">Add comment</button>
+
+		{% endif %}
+
+
+		</div>
+
+
+
+
+
+
+
+
+		<div id="allcomments">
+		{% for c,cc,ccc in zipped_data %}
+		<div class="divstyle comment comment-custom " id="class{{c.id}}"> <!-- viewrepliesbutton kan feh hna class -->
+			<p class="lead ">
+			{{ccc}}
+			</p>
+			<br/>
+		<p class="jumbotron">
+			{{cc}}
+			</p>
+			<br/>
+			{{c.created_at}}
+			<br/>
+			<br/>
+
+			{% if user.is_authenticated %}
+
+			<button class="replyclass" name="{{c.id}}">Reply</button>
+
+			<button class="viewrepliesbutton" name="{{c.id}}" >View replies</button>
+
+			{% if user.is_superuser %}
+			 <button name="{{c.id}}" class="deleteclass" >Delete</button>
+			{% endif %}
+            {% else %}
+			<button class="viewrepliesbutton" name="{{c.id}}" >View replies</button>
+			{% endif %}
+		</div>
+
+			<div id="allreplies{{ c.id }}" class=" {{c.id}} offset-1" style="display: none;">
+			{% for r,rr,rrr in zipped_data1 %}
+			{% ifequal r.comment_id c.id %}
+			<div  class=" {{c.id}} comment-custom"  >
+			{{rrr}}
+			<br/>
+			{{rr}}
+			<br/>
+			{{r.created_at}}
+			<br/>
+			</div>
+			{% endifequal %}
+		{% endfor %}
+		{% if user.is_authenticated %}
+		<div  id="replyform{{c.id}}" class="{{c.id}}" >
+            <textarea  class="{{c.id}}" name="parent_id"  id="input{{ c.id }}" ></textarea>
+           <button  class="  reply-formbutton {{c.id}}" value="{{ c.id }}">Reply</button>
+        </div>
+        {% endif %}</div>
+
+	{% endfor %}
+	</div>
+
+
+
+
+<!------------------ POST PAGE  ------------------------>
+
+
+	  <!------------------ POST PAGE  ------------------------>
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+</body>
+
+
+</html>

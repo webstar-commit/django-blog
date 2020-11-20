@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+</head>
+<body>
+<div class="fixed-action-btn smooth-scroll" style="bottom: 45px; right: 24px;">
+    <a href="#top-section" class="btn-floating btn-large red">
+        <i class="fa fa-arrow-up"></i>
+    </a>
+
+</div>
+{% include "blog/header.html" %}
+
+{% block main_block %}
+{% endblock %}
+{% include "blog/footer.html" %}
+{% block javascript %}
+<script>
+
+
+$(".submit").click(function () {
+      console.log( $(this).attr('value') );
+      cat_id=$(this).attr('value');
+        butt=$(this)
+        console.log(butt);
+
+
+
+      $.ajax({
+        url: '/ajax/sub/',
+        data: {
+          'catid': cat_id
+        },
+        dataType: 'json',
+        success: function (data) {
+          if (data.x == 1) {
+
+            butt.html("Subscribe!");
+
+          }
+          else if (data.x == 2)
+          {
+
+            butt.html("Unsubscribe!");
+          }
+        }
+      });
+    });
+
+
+
+    $(".deleteclass").on("click",function(){
+        comment_id=this.name
+        $.ajax({
+        url: '/double/',
+        data:{
+            'comment_id':comment_id
+        },
+        dataType: 'json',
+        success:function(data){
+            console.log("success");
+            console.log(data);
+            if(data.x==1){
+                var c = document.getElementById("class" + comment_id)
+                document.getElementById("class" + comment_id).innerHTML=""
+                c.parentNode.removeChild(c)
+            }
+        }
+    });
+	});
+
+
+
+	$(".viewrepliesbutton").on("click",function(){
+		if(this.innerHTML=="View replies"){
+			this.innerHTML="Hide replies"
+		var lid=this.name
+		var arr= document.getElementById("allreplies" + lid)
+		arr.style.display="block"
+
+    	}
+    	else
+    	{
+    		this.innerHTML="View replies"
+    		var lid=this.name
+    		var arr= document.getElementById("allreplies" + lid)
+    		arr.style.display="none"
+    	}
+	});
+
+	$(".replyclass").on("click",function(){
+		var lid=this.name
+		document.getElementById("allreplies" + lid).style.display="block"
+	});
+
+	$(".reply-formbutton").click(function(){
+		comment_id=this.value
+		reply_text=document.getElementById("input" + comment_id).value
+		if(reply_text!=""){
+    $.ajax({
+        url: '/triple/',
+        data:{
+        	'bodyreply':reply_text,
+        	'comment_id_reply':comment_id
+    	},
+   		dataType: 'json',
+        success:function(data){
+            $("#input" + comment_id).val("");
+            $("#allreplies" + comment_id).prepend('<div  class="divstylereply comment_id" style="display: block;" >' + data.username + '<br/>' + data.bodyy + '<br/>' + data.createdat + '</div>');
+        }
+    });
+}
+else
+{
+	console.log("l reply fady")
+}
+});
+
+$("#comment-formbutton").click(function(){
+		comment_text=$("#comment").val()
+		post_id=$("#comment-formbutton").val()
+		if(comment_text!=""){
+    $.ajax({
+        url: '/single/',
+        data:{
+        	'body':comment_text,
+        	'post_id':post_id
+    	},
+   		dataType: 'json',
+        success:function(data){
+            $("#comment").val("");
+            {% if user.is_superuser %}
+            $("#allcomments").append('<br/><div class="divstyle comment comment-custom " id="class' + data.idd + '">' + data.username + '<br/>' + data.bodyy + '<br/>' + data.createdat + '<br/><br/><button class="replyclass" name="' + data.idd + '"> Reply </button><button name="' + data.idd + '" class="deleteclass" >Delete</button><button class="viewrepliesbutton" name="' + data.idd + '" > View replies </button><div id="allreplies' + data.idd + '" class="' + data.idd + '" style="display: none;"><div  id="replyform' + data.idd + '" class="' + data.idd + '" ><textarea  class="' + data.idd + '" name="parent_id"  id="input' + data.idd + '" ></textarea><button  class="reply-formbutton ' + data.idd + '" value="' + data.idd + '">Reply</button></div></div></div>');
+            {% else %}
+            $("#allcomments").append('<br/><div class="divstyle comment comment-custom" id="class' + data.idd + '">' + data.username + '<br/>' + data.bodyy + '<br/>' + data.createdat + '<br/><br/><button class="replyclass" name="' + data.idd + '"> Reply </button><button class="viewrepliesbutton" name="' + data.idd + '" > View replies </button><div id="allreplies' + data.idd + '" class="' + data.idd + '" style="display: none;"><div  id="replyform' + data.idd + '" class="' + data.idd + '" ><textarea  class="' + data.idd + '" name="parent_id"  id="input' + data.idd + '" ></textarea><button  class="reply-formbutton ' + data.idd + '" value="' + data.idd + '">Reply</button></div></div></div>');
+            {% endif %}
+            $(".deleteclass").on("click",function(){
+        comment_id=this.name
+        $.ajax({
+        url: '/double/',
+        data:{
+            'comment_id':comment_id
+        },
+        dataType: 'json',
+        success:function(data){
+            if(data.x==1){
+                var c = document.getElementById("class" + comment_id)
+                document.getElementById("class" + comment_id).innerHTML=""
+                c.parentNode.removeChild(c)
+            }
+        }
+    });
+    });
+    $(".viewrepliesbutton").on("click",function(){
+        if(this.innerHTML=="View replies"){
+            this.innerHTML="Hide replies"
+        var lid=this.name
+        var arr= document.getElementById("allreplies" + lid)
+        arr.style.display="block"
+
+    }
+    else
+    {
+        this.innerHTML="View replies"
+        var lid=this.name
+        var arr= document.getElementById("allreplies" + lid)
+        arr.style.display="none"
+    }
+
+    });
+
+    $(".replyclass").on("click",function(){
+        var lid=this.name
+        document.getElementById("allreplies" + lid).style.display="block"
+    });
+
+
+
+    $(".reply-formbutton").click(function(){
+        comment_id=this.value
+        reply_text=document.getElementById("input" + comment_id).value
+        if(reply_text!=""){
+    $.ajax({
+        url: '/triple/',
+        data:{
+            'bodyreply':reply_text,
+            'comment_id_reply':comment_id
+        },
+        dataType: 'json',
+        success:function(data){
+            $("#input" + comment_id).val("");
+            $("#allreplies" + comment_id).prepend('<div  class="divstylereply comment_id comment-custom" style="display: block;" >' + data.username + '<br/>' + data.bodyy + '<br/>' + data.createdat + '</div>');
+        }
+    });
+}
+else
+{
+    console.log("l reply fady")
+}
+});
+        }
+    });
+}
+else
+{
+	console.log("l comment fady")
+}
+});
+
+
+
+
+$('.dislikebutton').click(function(){
+    var catid;
+    post_id = $(this).attr("data-catid");
+    $.ajax({
+        url: '/dislikepost/',
+        data:{
+        	'post_id':post_id
+    	},
+    	dataType: 'json',
+        success: function( data )
+        {
+
+
+           if(data.disCount==10)
+           {
+            /*var modal = $("#myModal")
+
+                console.log(modal)
+                document.getElementById("myModal").style.display = "block"; */
+
+            window.location.replace("http://127.0.0.1:8000/")
+           }
+           likebutton=$("#likecount")
+            dislikebutton=$("#discount")
+            likebutton.html("Likes:"+data.likesCount);
+
+
+            dislikebutton.html("Dislikes:"+data.disCount)
+
+        }
+     });});
+
+
+     $('.likebutton').click(function(){
+    var catid = $(this).attr("data-catid")
+    $.ajax(
+    {
+        url: "/likepost/",
+        data:{
+         'post_id': catid
+        },
+        dataType: 'json',
+        success: function( data )
+        {
+
+            $( '#like'+ catid ).remove();
+            likebutton=$("#likecount")
+            dislikebutton=$("#discount")
+            likebutton.html("Likes:"+data.likesCount);
+
+
+            dislikebutton.html("Dislikes:"+data.disCount)
+
+
+
+        }
+     });});
+
+</script>
+{% endblock %}
+
+</body>
+</html>

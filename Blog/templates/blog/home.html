@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% extends "blog/base.html" %}
+{% block main_block %}
+
+
+
+
+
+
+
+     <div class="container">
+
+      <div class="row">
+
+        <!-- Blog Entries Column -->
+        <div class="col-md-8">
+
+          <h1 class="my-4">
+          </h1>
+
+
+
+
+{%  for ps in allPosts  %}
+          <!-- Blog Post -->
+          <div class="card mb-4">
+           <a href="/Post/{{ps.id}}"> <img class="card-img-top" src="{{ ps.image.url }}" alt="Card image cap" width="200" height="270"></a>
+            <div class="card-body">
+              <h2 class="card-title">{{ps.title}}</h2>
+              <p class="card-text">{{ps.body}}</p>
+              <a href="/Post/{{ps.id}}" class="btn btn-primary">Read More &rarr;</a>
+            </div>
+            <div class="card-footer text-muted">
+              Posted on {{ps.created_at}} by
+              <a>{{ps.author}}</a>
+            </div>
+          </div>
+
+          {%  endfor  %}
+          <!-- Pagination -->
+            {% if allPosts.has_other_pages %}
+          <ul class="pagination justify-content-center mb-4">
+              {% if allPosts.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ allPosts.previous_page_number }}">&larr; Older</a>
+            </li>
+              {% else %}
+            <li class="page-item disabled">
+              <a class="page-link">&larr; Older</a>
+            </li>
+              {% endif %}
+                {% for i in allPosts.paginator.page_range %}
+                    {% if allPosts.number == i %}
+              <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                     <li><a href="?page={{ i }}">{{ i }}</a></li>
+
+                    {% endif %}
+                {% endfor %}
+
+
+
+
+              {% if allPosts.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ allPosts.next_page_number}}">Newer &rarr;</a>
+            </li>
+              {% else %}
+            <li class="page-item disabled">
+              <a class="page-link">Newer &rarr;</a>
+            </li>
+              {% endif %}
+          </ul>
+            {% endif %}
+
+
+        </div>
+
+        <!-- Sidebar Widgets Column -->
+        {% include "blog/sidebar.html" %}
+      </div>
+      <!-- /.row -->
+
+    </div>
+
+
+{% endblock %}
+
+</body>
+</html>

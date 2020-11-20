@@ -1,0 +1,75 @@
+
+        <div class="col-md-4">
+
+          <!-- Search Widget -->
+          <div class="card my-4">
+            <h5 class="card-header">Search</h5>
+            <div class="card-body">
+              <div class="input-group" >
+                <form method="GET" action="/Blog/search/">
+
+                <input type="text" class="form-control" id="search" name="term" placeholder="Search for...">
+                <span class="input-group-btn" >
+                  <button class="btn btn-secondary"  type="submit" >Go!</button>
+                </span>
+                      </form>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Categories Widget -->
+          <div class="card my-4">
+            <h5 class="card-header">Categories</h5>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-lg-12">
+
+                    <table class="table">
+                        <tbody>
+                        <tr><h2><a href="/home/" >All</a></h2></tr>
+                        {%  for cat in allCat  %}
+                        <tr>
+                            <td><h2 class="aa"> <a  href="/Category/{{cat.id}}">{{cat.name }}</a> </h2></td>
+                            {% if user.is_authenticated %}
+                            {% if cat.id in subcat %}
+                            <td><button class="btn btn-secondary submit"  value="{{cat.id}}">Unsubscribe!</button></td>
+
+                            {% else %}
+
+                     <td> <button class="btn btn-secondary submit"  value="{{cat.id}}">Subscribe!</button></td>
+                      {% endif %}
+                        {% endif %}
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Side Widget -->
+          <div class="card my-4">
+            <h3 class="card-header">Tags</h3>
+
+
+                    <table class="table">
+                        <tbody>
+
+                        <tr>
+                          {% for tag in alltag %}
+                          <h3 align="center"><a href="/Tag/{{tag.id}}">#{{tag.name}}</a></h3> </td>
+                         {% endfor %}
+                        </tr>
+
+                      </tbody>
+                    </table>
+
+              <div> </div>
+
+
+          </div>
+
+        </div>
